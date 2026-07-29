@@ -67,10 +67,10 @@ app.use(
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// React build folder
+
 const frontendPath = path.resolve(
-  process.cwd(),
-  "../frontend/dist"
+  __dirname,
+  "../../frontend/dist"
 );
 app.use(express.static(frontendPath));
 
@@ -84,7 +84,9 @@ app.use((req, res) => {
 
   res.sendFile(path.join(frontendPath, "index.html"));
 });
+console.log("Current Working Directory:", process.cwd());
 
+console.log("Frontend Path:", frontendPath);
 app.use(errorHandler);
 
 export default app;
