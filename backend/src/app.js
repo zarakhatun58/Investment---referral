@@ -20,7 +20,7 @@ const app =
 app.use(json());
 app.use(
   cors({
-    origin: true,
+    origin: process.env.CLIENT_URL || true,
     credentials: true,
   })
 );
@@ -64,18 +64,23 @@ const __dirname = path.dirname(__filename);
 
 // React build folder
 const frontendPath = path.join(
-  __dirname,
-  "../../frontend/dist"
+  process.cwd(),
+  "frontend",
+  "dist"
 );
-
 app.use(express.static(frontendPath));
 
-// React Router support
-app.use((req, res) => {
-  res.sendFile(
-    path.join(frontendPath, "index.html")
-  );
+app.get("*", (req, res) => {
+  if (req.originalUrl.startsWith("/api")) {
+    return res.status(404).json({
+      success: false,
+      message: "API route not found",
+    });
+  }
+
+  res.sendFile(path.join(frontendPath, "index.html"));
 });
+
 
 
 app.use(errorHandler);

@@ -160,10 +160,6 @@ console.log("Plans:", plans);
     );
   };
 
-
-
-
-
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -377,9 +373,6 @@ console.log("Plans:", plans);
 
                 </div>
               )}
-
-              {/* Amount */}
-
               <div>
                 <label className="mb-2 block text-sm font-semibold text-slate-700">
                   Investment Amount
@@ -401,8 +394,6 @@ console.log("Plans:", plans);
 
                 </div>
               </div>
-
-              {/* Expected Returns */}
 
               {selectedPlan &&
                 investmentAmount &&
@@ -463,9 +454,6 @@ console.log("Plans:", plans);
 
                   </div>
                 )}
-
-              {/* Buttons */}
-
               <div className="flex flex-col gap-3 pt-2 sm:flex-row">
 
                 <button
@@ -492,15 +480,11 @@ console.log("Plans:", plans);
                     ? "Creating..."
                     : "Create Investment"}
                 </button>
-
               </div>
-
             </div>
-
           </div>
         </div>
       )}
-      {/* Investment Plans */}
       <div>
         <h2 className="text-lg font-semibold text-slate-800 mb-4">Available Plans</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
