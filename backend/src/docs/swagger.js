@@ -7,12 +7,14 @@ const swaggerDocument = {
   },
 
   servers: [
-    {
-      url: "http://localhost:5000",
-      description: "Local Development Server",
-    },
-  ],
-
+  {
+    url:
+      process.env.NODE_ENV === "production"
+        ? "https://investment-referral.onrender.com"
+        : "http://localhost:5000",
+    description: "API Server",
+  },
+],
   components: {
     securitySchemes: {
       bearerAuth: {
@@ -100,245 +102,321 @@ const swaggerDocument = {
     },
   },
 
-  paths: {
-    "/api/register": {
-      post: {
-        tags: ["Authentication"],
-        summary: "Register User",
-
-        requestBody: {
-          required: true,
-          content: {
-            "application/json": {
-              schema: {
-                $ref:
-                  "#/components/schemas/RegisterRequest",
-              },
+paths: {
+  "/api/auth/register": {
+    post: {
+      tags: ["Authentication"],
+      summary: "Register User",
+      requestBody: {
+        required: true,
+        content: {
+          "application/json": {
+            schema: {
+              $ref: "#/components/schemas/RegisterRequest",
             },
           },
         },
-
-        responses: {
-          201: {
-            description:
-              "User registered successfully",
-          },
-          400: {
-            description:
-              "User already exists",
-          },
-        },
       },
-    },
-
-    "/api/login": {
-      post: {
-        tags: ["Authentication"],
-        summary: "Login User",
-
-        requestBody: {
-          required: true,
-          content: {
-            "application/json": {
-              schema: {
-                $ref:
-                  "#/components/schemas/LoginRequest",
-              },
-            },
-          },
-        },
-
-        responses: {
-          200: {
-            description:
-              "Login successful",
-          },
-          401: {
-            description:
-              "Invalid credentials",
-          },
-        },
-      },
-    },
-
-    "/api/investments": {
-      post: {
-        tags: ["Investments"],
-        summary:
-          "Create Investment",
-
-        security: [
-          {
-            bearerAuth: [],
-          },
-        ],
-
-        requestBody: {
-          required: true,
-          content: {
-            "application/json": {
-              schema: {
-                $ref:
-                  "#/components/schemas/InvestmentRequest",
-              },
-            },
-          },
-        },
-
-        responses: {
-          201: {
-            description:
-              "Investment created",
-          },
-        },
-      },
-
-      get: {
-        tags: ["Investments"],
-        summary:
-          "Get User Investments",
-
-        security: [
-          {
-            bearerAuth: [],
-          },
-        ],
-
-        responses: {
-          200: {
-            description:
-              "Investment List",
-          },
-        },
-      },
-    },
-
-    "/api/dashboard": {
-      get: {
-        tags: ["Dashboard"],
-        summary:
-          "Get Dashboard Data",
-
-        security: [
-          {
-            bearerAuth: [],
-          },
-        ],
-
-        responses: {
-          200: {
-            description:
-              "Dashboard Information",
-          },
-        },
-      },
-    },
-
-    "/api/referrals/direct": {
-      get: {
-        tags: ["Referrals"],
-        summary:
-          "Get Direct Referrals",
-
-        security: [
-          {
-            bearerAuth: [],
-          },
-        ],
-
-        responses: {
-          200: {
-            description:
-              "Direct Referral List",
-          },
-        },
-      },
-    },
-
-    "/api/referrals/tree": {
-      get: {
-        tags: ["Referrals"],
-        summary:
-          "Get Referral Tree",
-
-        security: [
-          {
-            bearerAuth: [],
-          },
-        ],
-
-        responses: {
-          200: {
-            description:
-              "Referral Hierarchy",
-          },
-        },
-      },
-    },
-
-    "/api/roi-history": {
-      get: {
-        tags: ["ROI"],
-        summary:
-          "Get ROI History",
-
-        security: [
-          {
-            bearerAuth: [],
-          },
-        ],
-
-        responses: {
-          200: {
-            description:
-              "ROI History",
-          },
-        },
-      },
-    },
-
-    "/api/referral-income": {
-      get: {
-        tags: ["Referral Income"],
-        summary:
-          "Get Referral Income History",
-
-        security: [
-          {
-            bearerAuth: [],
-          },
-        ],
-
-        responses: {
-          200: {
-            description:
-              "Referral Income History",
-          },
-        },
-      },
-    },
-
-    "/api/transactions": {
-      get: {
-        tags: ["Transactions"],
-        summary:
-          "Get Wallet Transactions",
-
-        security: [
-          {
-            bearerAuth: [],
-          },
-        ],
-
-        responses: {
-          200: {
-            description:
-              "Transaction History",
-          },
+      responses: {
+        201: {
+          description: "User registered successfully",
         },
       },
     },
   },
+
+  "/api/auth/login": {
+    post: {
+      tags: ["Authentication"],
+      summary: "Login User",
+      requestBody: {
+        required: true,
+        content: {
+          "application/json": {
+            schema: {
+              $ref: "#/components/schemas/LoginRequest",
+            },
+          },
+        },
+      },
+      responses: {
+        200: {
+          description: "Login successful",
+        },
+      },
+    },
+  },
+
+  "/api/auth/profile": {
+    get: {
+      tags: ["Authentication"],
+      summary: "Get Logged In User",
+      security: [
+        {
+          bearerAuth: [],
+        },
+      ],
+      responses: {
+        200: {
+          description: "User Profile",
+        },
+      },
+    },
+  },
+
+  "/api/dashboard": {
+    get: {
+      tags: ["Dashboard"],
+      summary: "Dashboard Data",
+      security: [
+        {
+          bearerAuth: [],
+        },
+      ],
+      responses: {
+        200: {
+          description: "Dashboard",
+        },
+      },
+    },
+  },
+
+  "/api/investments": {
+    get: {
+      tags: ["Investments"],
+      summary: "Get Investments",
+      security: [
+        {
+          bearerAuth: [],
+        },
+      ],
+      responses: {
+        200: {
+          description: "Investment List",
+        },
+      },
+    },
+
+    post: {
+      tags: ["Investments"],
+      summary: "Create Investment",
+      security: [
+        {
+          bearerAuth: [],
+        },
+      ],
+      requestBody: {
+        required: true,
+        content: {
+          "application/json": {
+            schema: {
+              $ref: "#/components/schemas/InvestmentRequest",
+            },
+          },
+        },
+      },
+      responses: {
+        201: {
+          description: "Investment Created",
+        },
+      },
+    },
+  },
+
+  "/api/plans": {
+    get: {
+      tags: ["Plans"],
+      summary: "Get Investment Plans",
+      security: [
+        {
+          bearerAuth: [],
+        },
+      ],
+      responses: {
+        200: {
+          description: "Plan List",
+        },
+      },
+    },
+
+    post: {
+      tags: ["Plans"],
+      summary: "Create Plan",
+      security: [
+        {
+          bearerAuth: [],
+        },
+      ],
+      responses: {
+        201: {
+          description: "Plan Created",
+        },
+      },
+    },
+  },
+
+  "/api/plans/{id}": {
+    get: {
+      tags: ["Plans"],
+      summary: "Get Plan By Id",
+      security: [
+        {
+          bearerAuth: [],
+        },
+      ],
+      parameters: [
+        {
+          name: "id",
+          in: "path",
+          required: true,
+          schema: {
+            type: "string",
+          },
+        },
+      ],
+      responses: {
+        200: {
+          description: "Plan Details",
+        },
+      },
+    },
+
+    put: {
+      tags: ["Plans"],
+      summary: "Update Plan",
+      security: [
+        {
+          bearerAuth: [],
+        },
+      ],
+      parameters: [
+        {
+          name: "id",
+          in: "path",
+          required: true,
+          schema: {
+            type: "string",
+          },
+        },
+      ],
+      responses: {
+        200: {
+          description: "Plan Updated",
+        },
+      },
+    },
+
+    delete: {
+      tags: ["Plans"],
+      summary: "Delete Plan",
+      security: [
+        {
+          bearerAuth: [],
+        },
+      ],
+      parameters: [
+        {
+          name: "id",
+          in: "path",
+          required: true,
+          schema: {
+            type: "string",
+          },
+        },
+      ],
+      responses: {
+        200: {
+          description: "Plan Deleted",
+        },
+      },
+    },
+  },
+
+  "/api/referrals/direct": {
+    get: {
+      tags: ["Referrals"],
+      summary: "Direct Referrals",
+      security: [
+        {
+          bearerAuth: [],
+        },
+      ],
+      responses: {
+        200: {
+          description: "Referral List",
+        },
+      },
+    },
+  },
+
+  "/api/referrals/tree": {
+    get: {
+      tags: ["Referrals"],
+      summary: "Referral Tree",
+      security: [
+        {
+          bearerAuth: [],
+        },
+      ],
+      responses: {
+        200: {
+          description: "Referral Tree",
+        },
+      },
+    },
+  },
+
+  "/api/referrals/referral-income": {
+    get: {
+      tags: ["Referrals"],
+      summary: "Referral Income History",
+      security: [
+        {
+          bearerAuth: [],
+        },
+      ],
+      responses: {
+        200: {
+          description: "Referral Income",
+        },
+      },
+    },
+  },
+
+  "/api/roi-history": {
+    get: {
+      tags: ["ROI"],
+      summary: "ROI History",
+      security: [
+        {
+          bearerAuth: [],
+        },
+      ],
+      responses: {
+        200: {
+          description: "ROI History",
+        },
+      },
+    },
+  },
+
+  "/api/transactions": {
+    get: {
+      tags: ["Transactions"],
+      summary: "Wallet Transactions",
+      security: [
+        {
+          bearerAuth: [],
+        },
+      ],
+      responses: {
+        200: {
+          description: "Transaction List",
+        },
+      },
+    },
+  },
+},
 };
 
 export default swaggerDocument;
